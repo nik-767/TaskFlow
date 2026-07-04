@@ -16,7 +16,29 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from accounts.views import Register_api , ProfileAPi
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
+
+
+
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView
+)
+router = DefaultRouter()
+router.register(r'profile', ProfileAPi , basename='profile')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Is URL par email/password POST karne se Access aur Refresh token milenge 
+    # (Login endpoint)
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    
+    # Is URL par Refresh Token bhejne se naya Access Token mil jata hai
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('register/', Register_api.as_view()),
+    path('', include(router.urls)),
+
 ]
