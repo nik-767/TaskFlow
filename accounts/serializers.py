@@ -2,27 +2,37 @@ from .models import Profile ,CustomUser
 from rest_framework import serializers 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email' , 'password']  # Sirf yahi fields frontend ko JSON me dikhenge
+        fields = ['id', 'username', 'email' , 'password', 'confirm_password']  # Sirf yahi fields frontend ko JSON me dikhenge
         extra_kwargs = {
             'password' : {'write_only' : True}
         }
+
+    def validate(self, attrs):
+        # Using .get() prevents KeyError crashes if fields are missing from the request
+        password = attrs.get('password')
+        confirm_password = attrs.get('confirm_password')
+
+        if password != confirm_password:
+            raise serializers.ValidationError(
+                {"confirm_password": "Passwords do not match."}
+            )
+        return attrs
+        
+        
     
     def create(self, validated_data):
-        """
-    Overriding the default create method of ModelSerializer.
+        # Safely remove confirm_password from data dictionary
+        validated_data.pop('confirm_password', None)
+        
+        # Cleaner approach: pass dictionary directly using keyword unpacking (**)
+        return CustomUser.objects.create_user(**validated_data)
+
     
-    Why this works: 
-    Django's built-in manager function 'create_user()' has internal logic that 
-    automatically extracts the 'password' argument, passes it through set_password() 
-    cryptographic hashing, and inserts the row cleanly into the database.
-    """
-        return CustomUser.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=validated_data['password']
-        )
+
     
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
