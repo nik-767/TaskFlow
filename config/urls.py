@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from accounts.views import Register_api , ProfileAPi
+from accounts.views import Register_api , ProfileAPi , WorkplaceAPI
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 
@@ -28,7 +28,7 @@ from rest_framework_simplejwt.views import (
 )
 router = DefaultRouter()
 router.register(r'profile', ProfileAPi , basename='profile')
-
+router.register('workplace', WorkplaceAPI, basename='workplace')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,5 +40,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', Register_api.as_view()),
     path('', include(router.urls)),
+    path('api/', include('core.urls')),
 
 ]
