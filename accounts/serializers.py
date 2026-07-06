@@ -1,4 +1,4 @@
-from .models import Profile ,CustomUser
+from .models import Profile ,CustomUser , Workplace
 from rest_framework import serializers 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -11,7 +11,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             'password' : {'write_only' : True}
         }
 
-    def validate(self, attrs):
+    def validate(self, attrs): #attrs (Data Ka Dabba): attrs ek simple Python Dictionary hai jisme user ka bheja hua
+        # saara data hota hai (jaise: {"username": "bhai", "password": "123", "confirm_password": "456"}).
         # Using .get() prevents KeyError crashes if fields are missing from the request
         password = attrs.get('password')
         confirm_password = attrs.get('confirm_password')
@@ -35,6 +36,15 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     
 class ProfileSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Profile
         fields = "__all__"
+
+class WorkplaceSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Workplace
+        fields = '__all__'
+        read_only_fields = ['owner'] #only can read
+        
