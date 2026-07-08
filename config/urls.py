@@ -20,8 +20,6 @@ from accounts.views import Register_api , ProfileAPi , WorkplaceAPI
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 
-
-
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView
@@ -39,7 +37,6 @@ urlpatterns = [
     # Is URL par Refresh Token bhejne se naya Access Token mil jata hai
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', Register_api.as_view()),
-    path('', include(router.urls)),
-    path('api/', include('core.urls')),
+    path('', include(router.urls))
 
 ]

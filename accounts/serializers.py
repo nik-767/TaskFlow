@@ -1,4 +1,4 @@
-from .models import Profile ,CustomUser , Workplace
+from .models import Profile ,CustomUser , Workspace , WorkspaceMembers
 from rest_framework import serializers 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -44,7 +44,14 @@ class ProfileSerializer(serializers.ModelSerializer):
 class WorkplaceSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = Workplace
+        model = Workspace
         fields = '__all__'
         read_only_fields = ['owner'] #only can read
+        
+class WorkSpaceMemberSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = WorkspaceMembers
+        fields = '__all__'
+        read_only_fields = ['workspace', 'user', 'role', 'joined_at']
         

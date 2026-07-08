@@ -45,16 +45,32 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username}'s Profile"
     
-class Workplace(models.Model):
-    name = models.CharField()
+class Workspace(models.Model):
+    name = models.CharField(max_length=20)
     description = models.TextField(null=True, blank=True)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="owner_workplace"
+        on_delete=models.SET_NULL,
+        related_name="owner_workplace",
+        null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.name}"
     
+class WorkspaceMembers(models.Model):
+    RoleChoice =  [
+        ('owner', 'Owner'),
+        ('admin', 'Admin'),
+        ('manager','Manager'),
+        ('developer','Developer'),
+        ('viewer','Viewer'),
+    ]
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE,related_name='Members')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    roles = models.CharField(max_length=20, choices=RoleChoice)
+    joined_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('workspace', 'user')

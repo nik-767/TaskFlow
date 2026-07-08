@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework_simplejwt.tokens import RefreshToken  # Tool used to manually generate tokens
 from .serializers import RegisterSerializer , ProfileSerializer , WorkplaceSerializer
-from .models import Profile ,CustomUser ,Workplace
+from .models import Profile ,CustomUser ,Workspace
 from rest_framework.views import APIView 
 from rest_framework.permissions import IsAuthenticated
 
@@ -44,8 +44,8 @@ class WorkplaceAPI(viewsets.ModelViewSet):
     serializer_class = WorkplaceSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self):
-        return Workplace.object.filter(owner=self.request.user) # only thr requested user profile visible not all .
+    def get_queryset(self):
+        return Workplace.objects.filter(owner=self.request.user) # only thr requested user profile visible not all .
       
     def create_perform(self ,serializer):
         serializer.save(owner=self.request.user)
