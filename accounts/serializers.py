@@ -53,5 +53,27 @@ class WorkSpaceMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkspaceMembers
         fields = '__all__'
-        read_only_fields = ['workspace', 'user', 'role', 'joined_at']
+        read_only_fields = [ 'joined_at']
+
+    def validate(self, validate_data):
+            # incoming data se workspace or role nikalna
+            workspace = validate_data.get('workspace')
+            role = validate_data.get('role')
+
+            if role == 'owner':
+            #check karo owner ha ya nhi workplace ma
+                exist_owner = WorkspaceMembers.objects.filter(
+                    workspace = workspace,
+                    role = 'owner'
+            )
+    # self.instance check karta hai ki ye UPDATE (PUT/PATCH) hai ya CREATE (POST)
+                if self.instance:
+                    exist_owner = exist_owner.exclude(pk=self.instance.pk)
+
+     # 4. Agar koi doosra owner mil jata hai, toh error raise karo
+                if exist_owner.exists():
+                    raise serializers.ValidationError({
+                "role": "This workspace already has an owner. Only one owner is allowed."
+                })
         
+            return validate_data
