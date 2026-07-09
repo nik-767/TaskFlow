@@ -58,7 +58,7 @@ class WorkSpaceMemberSerializer(serializers.ModelSerializer):
     def validate(self, validate_data):
             # incoming data se workspace or role nikalna
             workspace = validate_data.get('workspace')
-            role = validate_data.get('role')
+            role = validate_data.get('role') # means owner
 
             if role == 'owner':
             #check karo owner ha ya nhi workplace ma
