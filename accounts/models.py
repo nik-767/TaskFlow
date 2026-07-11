@@ -74,3 +74,10 @@ class WorkspaceMembers(models.Model):
 
     class Meta:
         unique_together = ('workspace', 'user')
+
+class Project(models.Model):
+    workspace = models.ForeignKey(Workspace,on_delete=models.CASCADE)
+    name = models.CharField(max_length=20)
+    description = models.TextField()
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL ,null=True, related_name='created_projects')
+    created_at = models.DateTimeField(auto_now_add=True)
