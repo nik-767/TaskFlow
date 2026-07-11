@@ -1,4 +1,4 @@
-from .models import Profile ,CustomUser , Workspace , WorkspaceMembers
+from .models import Profile ,CustomUser , Workspace , WorkspaceMembers , Project
 from rest_framework import serializers 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -77,3 +77,9 @@ class WorkSpaceMemberSerializer(serializers.ModelSerializer):
                 })
         
             return validate_data
+
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = '__all__'
+        read_only_fields = ['created_by']
