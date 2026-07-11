@@ -3,8 +3,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework_simplejwt.tokens import RefreshToken  # Tool used to manually generate tokens
-from .serializers import RegisterSerializer , ProfileSerializer , WorkplaceSerializer , WorkSpaceMemberSerializer
-from .models import Profile ,CustomUser ,Workspace, WorkspaceMembers
+from .serializers import RegisterSerializer , ProfileSerializer , WorkplaceSerializer , WorkSpaceMemberSerializer , ProjectSerializer
+from .models import Profile ,CustomUser ,Workspace, WorkspaceMembers , Project
 from rest_framework.views import APIView 
 from rest_framework.permissions import IsAuthenticated 
 from .permissions import IsWorkspaceAdminOrOwner
@@ -63,3 +63,13 @@ class WorkspaceMemberView(viewsets.ModelViewSet):
     
     def perform_create(self,serailizer):
         serailizer.save()
+
+class Projectview(viewsets.ModelViewSet):
+    permission_classes = [IsWorkspaceAdminOrOwner]
+    serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        return Project.objects.filter(Workspace__Members__user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
