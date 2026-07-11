@@ -3,8 +3,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework_simplejwt.tokens import RefreshToken  # Tool used to manually generate tokens
-from .serializers import RegisterSerializer , ProfileSerializer , WorkplaceSerializer
-from .models import Profile ,CustomUser ,Workspace
+from .serializers import RegisterSerializer , ProfileSerializer , WorkplaceSerializer , WorkSpaceMemberSerializer
+from .models import Profile ,CustomUser ,Workspace, WorkspaceMembers
 from rest_framework.views import APIView 
 from rest_framework.permissions import IsAuthenticated
 
@@ -49,3 +49,16 @@ class WorkplaceAPI(viewsets.ModelViewSet):
       
     def create_perform(self ,serializer):
         serializer.save(owner=self.request.user)
+
+class WorkspaceMemberView(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, IsWorkspaceAdminOrOwner]
+    serializer_class = WorkSpaceMemberSerializer
+    
+    #Yahan workspace__members__user ka matlab: "us WorkspaceMembers row ke workspace field se hoke,
+    #  uske members (related_name) se hoke, unme se user field match karo current user se."
+    # Ye asli double-underscore lookup hai — query ke andar, request.user ke peeche nahi.
+    def get_queryset(self):
+        return WorkspaceMembers.objects.filter(workspace__Members__user=self.request.user)
+    
+    def perform_create(self,serailizer):
+        serailizer.save()
