@@ -6,7 +6,8 @@ from rest_framework_simplejwt.tokens import RefreshToken  # Tool used to manuall
 from .serializers import RegisterSerializer , ProfileSerializer , WorkplaceSerializer , WorkSpaceMemberSerializer
 from .models import Profile ,CustomUser ,Workspace, WorkspaceMembers
 from rest_framework.views import APIView 
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated 
+from .permissions import IsWorkspaceAdminOrOwner
 
 # Create your views here.
 
