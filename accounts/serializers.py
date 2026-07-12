@@ -1,4 +1,4 @@
-from .models import Profile ,CustomUser , Workspace , WorkspaceMembers , Project
+from .models import Profile ,CustomUser , Workspace , WorkspaceMembers , Project , Board
 from rest_framework import serializers 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -83,3 +83,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = '__all__'
         read_only_fields = ['created_by']
+
+class BoardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Board
+        fields = '__all__'
