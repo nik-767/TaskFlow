@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from accounts.views import Register_api , ProfileAPi , WorkplaceAPI , WorkspaceMemberView , Projectview 
+from accounts.views import Register_api , ProfileAPi , WorkplaceAPI , WorkspaceMemberView , Projectview , BoardView
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 
@@ -29,6 +29,7 @@ router.register(r'profile', ProfileAPi , basename='profile')
 router.register('workplace', WorkplaceAPI, basename='workplace')
 router.register('projects', Projectview, basename='project')
 router.register('members', WorkspaceMemberView, basename='workspace-member')
+router.register('boards', BoardView, basename='board')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

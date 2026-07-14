@@ -46,9 +46,9 @@ class WorkplaceAPI(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Workplace.objects.filter(owner=self.request.user) # only thr requested user profile visible not all .
+        return Workspace.objects.filter(owner=self.request.user) # only thr requested user profile visible not all .
       
-    def create_perform(self ,serializer):
+    def perform_create(self ,serializer):
         serializer.save(owner=self.request.user)
 
 class WorkspaceMemberView(viewsets.ModelViewSet):
@@ -75,8 +75,8 @@ class Projectview(viewsets.ModelViewSet):
         serializer.save(created_by=self.request.user)
 
 class BoardView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, IsWorkspaceAdminOrOwner]
+    permission_classes = [IsAuthenticated , IsWorkspaceAdminOrOwner]
     serializer_class = BoardSerializer
 
     def get_queryset(self):
-        return Board.objects.filter(project__workspace__Members__user=self.request.user)
+        return Board.objects.filter(Project__workspace__Members__user=self.request.user)
