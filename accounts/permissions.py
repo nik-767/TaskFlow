@@ -49,8 +49,7 @@ class IsTaskAssigneeOrWorkspaceAdmin(BasePermission):
 
         try:
             project = Board.objects.get(id=project_id)
-            
-        except Project.DoesNotExist:
+        except Board.DoesNotExist:
             return False
         
         return WorkspaceMembers.objects.filter(
@@ -69,7 +68,7 @@ class IsTaskAssigneeOrWorkspaceAdmin(BasePermission):
         workspace = obj.project.workspace
      
         # Check A: Kya user is Task ka Assignee hai? (Aapke model mein field 'assigned' hai)
-        if obj.assigned_to == request.user:
+        if obj.assigned == request.user:
             return True
 
         return WorkspaceMembers.objects.filter(
