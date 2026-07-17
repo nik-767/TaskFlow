@@ -95,13 +95,15 @@ class Task(models.Model):
     PRIORITY_CHOICES = [('low', 'Low'), ('medium', 'Medium'), ('high', 'High'), ('critical', 'Critical')]
     title = models.CharField(max_length=200)
     description = models.TextField( blank=True)
-    project = models.ForeignKey(Board, on_delete=models.CASCADE)
-    assigned = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_tasks')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_tasks')
     reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL , null=True , related_name='reported_tasks')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='todo')
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='medium')
     deadline = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)       # add this if missing
+
     def __str__(self):
         return self.title
