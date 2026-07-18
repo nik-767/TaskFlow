@@ -1,4 +1,4 @@
-#Problem: nums = [0, 1, 0, 3, 12]. Aapko is array ke saare zeros (0) ko aakhri mein push karna hai, lekin bina koi naya list ([]) banaye! Jo bhi shift karna hai, isi nums ke andar element ko swap (Pattern 10) karke karo.(Hint: Ek pointer slow rakho jo zero ki position trace karega, aur ek fast jo numbers dhoondega).
+"""#Problem: nums = [0, 1, 0, 3, 12]. Aapko is array ke saare zeros (0) ko aakhri mein push karna hai, lekin bina koi naya list ([]) banaye! Jo bhi shift karna hai, isi nums ke andar element ko swap (Pattern 10) karke karo.(Hint: Ek pointer slow rakho jo zero ki position trace karega, aur ek fast jo numbers dhoondega).
 
 nums = [0,1,0,3,12]
 left = 0
@@ -28,3 +28,28 @@ while first < last:
     
     else:
         last -= 1
+
+"""
+"""nums = [2, 5, 8, 1, 6, 7, 9]
+left = 0
+for i in range(len(nums)):
+    if nums[i] % 2 != 0:
+        nums[left] = nums[i]
+        left += 1
+        
+print(nums[:left])
+"""
+#CHECK PALLINDROME
+s = "madam"
+left = 0
+right = len(s) -1
+while left < right:
+    if s[left] != s[right]:
+        print(False)
+        break
+
+    left += 1
+    right -= 1
+else:
+    print(True)
+        

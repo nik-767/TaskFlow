@@ -300,7 +300,6 @@ Notification
 ### Definition of Done
 Notification created on the four listed trigger events, deliverable
 channel per Open Decisions, and markable as read.
-
 ------------------------------------------------------------------------
 
 ## Phase 10 -- Activity Log
