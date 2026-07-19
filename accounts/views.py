@@ -3,11 +3,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework_simplejwt.tokens import RefreshToken  # Tool used to manually generate tokens
-from .serializers import RegisterSerializer , ProfileSerializer , WorkplaceSerializer , WorkSpaceMemberSerializer , ProjectSerializer , BoardSerializer , TaskSerializer
-from .models import Profile ,CustomUser ,Workspace, WorkspaceMembers , Project , Board , Task
+from .serializers import RegisterSerializer , ProfileSerializer , WorkplaceSerializer , WorkSpaceMemberSerializer , ProjectSerializer , BoardSerializer , TaskSerializer , Flowserializer
+from .models import Profile ,CustomUser ,Workspace, WorkspaceMembers , Project , Board , Task , Flow
 from rest_framework.views import APIView 
 from rest_framework.permissions import IsAuthenticated 
-from .permissions import IsWorkspaceAdminOrOwner
+from .permissions import IsWorkspaceAdminOrOwner , IsflowWork
 
 # Create your views here.
 
@@ -86,4 +86,17 @@ class TaskView(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
 
     def get_queryset(self):
-        return 
+            return Task.objects.filter(project__workspace__Members__user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(reporter=self.request.user)
+    
+class FlowView(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated,IsflowWork]
+    serializer_class = Flowserializer
+
+    def get_queryset(self):
+        return Flow.objects.filter(task__project__workspace__Members__user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
