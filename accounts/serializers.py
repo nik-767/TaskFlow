@@ -1,4 +1,4 @@
-from .models import Profile ,CustomUser , Workspace , WorkspaceMembers , Project , Board ,Task
+from .models import Profile ,CustomUser , Workspace , WorkspaceMembers , Project , Board ,Task , Flow
 from rest_framework import serializers 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -94,3 +94,9 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = '__all__'
         read_only_fields = ['reporter']
+
+class Flowserializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Flow
+        fields = '__all__'
