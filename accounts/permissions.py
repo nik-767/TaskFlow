@@ -1,7 +1,7 @@
 # core/permissions.py
 
 from rest_framework.permissions import BasePermission
-from .models import Board, Project, WorkspaceMembers
+from .models import Board, Project, WorkspaceMembers ,Task , Flow
 
 
 class IsWorkspaceAdminOrOwner(BasePermission):
@@ -75,4 +75,36 @@ class IsTaskAssigneeOrWorkspaceAdmin(BasePermission):
             workspace = workspace,
             user=request.user,
             role__in=['owner', 'admin']
+    ).exists()
+
+class IsflowWork(BasePermission):
+
+    def has_permission(self, request, view):
+        if request.method in ('GET' , 'HEAD' , 'OPTIONS'):
+            return request.user and request.user.is_authenticated
+        
+        task_id = view.kwargs.get('task_pk') or request.data.get('task')
+
+        if not task_id:
+            return False
+        
+        return WorkspaceMembers.objects.filter(
+            workspace__project__board__task__id=task_id,
+            user=request.user
+        ).exists()
+    
+    def has_object_permission(self, request, view, obj):
+        if request.method in ('GET', 'HEAD' , 'OPTIONS'):
+            return True
+        
+        if obj.user == request.user:
+            return True
+        
+        # Case 2: not the author, but check if they're Owner/Admin in this comment's workspace
+        workspace = obj.task.project.workspace
+
+        return WorkspaceMembers.objects.filter(
+        workspace=workspace,
+        user=request.user,
+        role__in=['owner', 'admin']
     ).exists()
