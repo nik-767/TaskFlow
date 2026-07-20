@@ -65,11 +65,11 @@ class WorkspaceMemberView(viewsets.ModelViewSet):
         serailizer.save()
 
 class Projectview(viewsets.ModelViewSet):
-    permission_classes = [IsWorkspaceAdminOrOwner]
+    permission_classes = [IsWorkspaceAdminOrOwner, IsAuthenticated]
     serializer_class = ProjectSerializer
 
     def get_queryset(self):
-        return Project.objects.filter(Workspace__Members__user=self.request.user)
+        return Project.objects.filter(workspace__Members__user=self.request.user)
     
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
@@ -79,14 +79,14 @@ class BoardView(viewsets.ModelViewSet):
     serializer_class = BoardSerializer
 
     def get_queryset(self):
-        return Board.objects.filter(Project__workspace__Members__user=self.request.user)
+        return Board.objects.filter(project__workspace__Members__user=self.request.user)
 
 class TaskView(viewsets.ModelViewSet):
-    Permission_classes = [IsAuthenticated , IsWorkspaceAdminOrOwner]
+    permission_classes = [IsAuthenticated , IsWorkspaceAdminOrOwner]
     serializer_class = TaskSerializer
 
     def get_queryset(self):
-            return Task.objects.filter(project__workspace__Members__user=self.request.user)
+            return Task.objects.filter(board__workspace__Members__user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(reporter=self.request.user)

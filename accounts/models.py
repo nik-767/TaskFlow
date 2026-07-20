@@ -68,7 +68,7 @@ class WorkspaceMembers(models.Model):
     ]
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE,related_name='Members')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    roles = models.CharField(max_length=20, choices=RoleChoice)
+    role = models.CharField(max_length=20, choices=RoleChoice)
     joined_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -94,7 +94,6 @@ class Task(models.Model):
     PRIORITY_CHOICES = [('low', 'Low'), ('medium', 'Medium'), ('high', 'High'), ('critical', 'Critical')]
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    project = models.ForeignKey(Board, on_delete=models.CASCADE)
     assigned = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_tasks')
     reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='reported_tasks')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='todo')
@@ -102,6 +101,8 @@ class Task(models.Model):
     deadline = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
