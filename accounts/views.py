@@ -7,7 +7,7 @@ from .serializers import RegisterSerializer , ProfileSerializer , WorkplaceSeria
 from .models import Profile ,CustomUser ,Workspace, WorkspaceMembers , Project , Board , Task , Flow
 from rest_framework.views import APIView 
 from rest_framework.permissions import IsAuthenticated 
-from .permissions import IsWorkspaceAdminOrOwner , IsflowWork
+from .permissions import IsWorkspaceAdminOrOwner , IsflowWork , IsTaskAssigneeOrWorkspaceAdmin
 
 # Create your views here.
 
@@ -82,11 +82,11 @@ class BoardView(viewsets.ModelViewSet):
         return Board.objects.filter(project__workspace__Members__user=self.request.user)
 
 class TaskView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated , IsWorkspaceAdminOrOwner]
+    permission_classes = [IsAuthenticated , IsTaskAssigneeOrWorkspaceAdmin]
     serializer_class = TaskSerializer
 
     def get_queryset(self):
-            return Task.objects.filter(board__workspace__Members__user=self.request.user)
+            return Task.objects.filter(project__workspace__Members__user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(reporter=self.request.user)

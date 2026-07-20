@@ -1,5 +1,4 @@
 # core/permissions.py
-
 from rest_framework.permissions import BasePermission
 from .models import Board, Project, WorkspaceMembers ,Task , Flow
 
@@ -29,9 +28,11 @@ class IsWorkspaceAdminOrOwner(BasePermission):
 
         if request.method in ('GET' , 'HEAD', 'OPTIONS'):
             return True
-    
+        
+        workspace = obj.workspace if hasattr(obj, 'workspace') else obj.project.workspace
+
         return WorkspaceMembers.objects.filter(
-            workspace = obj.workspace,
+            workspace = workspace,
             user=request.user,
             role__in=['owner', 'admin']
     ).exists()
@@ -48,8 +49,8 @@ class IsTaskAssigneeOrWorkspaceAdmin(BasePermission):
             return False
 
         try:
-            project = Board.objects.get(id=project_id)
-        except Board.DoesNotExist:
+            project = Project.objects.get(id=project_id)
+        except Project.DoesNotExist:
             return False
         
         return WorkspaceMembers.objects.filter(
@@ -63,8 +64,7 @@ class IsTaskAssigneeOrWorkspaceAdmin(BasePermission):
         if request.method in ('GET' , 'HEAD', 'OPTIONS'):
             return True
         
-        # RASTA: Task (obj) -> Board (project) -> Project -> Workspace
-        # Kyunki aapke Task model mein 'project' field Board model ko point karti hai
+        
         workspace = obj.project.workspace
      
         # Check A: Kya user is Task ka Assignee hai? (Aapke model mein field 'assigned' hai)
@@ -88,11 +88,15 @@ class IsflowWork(BasePermission):
         if not task_id:
             return False
         
+        try:
+            task = Task.objects.get(id=task_id)
+        except Task.DoesNotExist:
+            return False
+
         return WorkspaceMembers.objects.filter(
-            workspace__project__board__task__id=task_id,
+            workspace=task.project.workspace,
             user=request.user
         ).exists()
-    
     def has_object_permission(self, request, view, obj):
         if request.method in ('GET', 'HEAD' , 'OPTIONS'):
             return True
