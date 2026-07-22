@@ -87,16 +87,32 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 import os
 
-DATABASES = {
-  "default": {
-    "ENGINE": "django.db.backends.postgresql",
-    "NAME": os.environ.get("POSTGRES_DB", "taskflow"),
-    "USER": os.environ.get("POSTGRES_USER", "postgres"),
-    "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
-    "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
-    "PORT": os.environ.get("POSTGRES_PORT", "5432"),
-  }
-}
+# Use Postgres if full credentials are provided; otherwise fall back to SQLite for
+# local development to avoid startup failures when Postgres isn't available.
+POSTGRES_DB = os.environ.get("POSTGRES_DB")
+POSTGRES_USER = os.environ.get("POSTGRES_USER")
+POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
+POSTGRES_HOST = os.environ.get("POSTGRES_HOST")
+POSTGRES_PORT = os.environ.get("POSTGRES_PORT")
+
+if POSTGRES_DB and POSTGRES_USER and POSTGRES_PASSWORD:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": POSTGRES_DB,
+            "USER": POSTGRES_USER,
+            "PASSWORD": POSTGRES_PASSWORD,
+            "HOST": POSTGRES_HOST or "localhost",
+            "PORT": POSTGRES_PORT or "5432",
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
