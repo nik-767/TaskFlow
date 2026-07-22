@@ -14,17 +14,29 @@ ENV/
 *.sqlite3
 db.sqlite3
 *.log
-/media/
-/staticfiles/
+media/
+staticfiles/
 
 # Environment files
 .env
 .env.*
+*.local
 
-# IDE/editor
+# IDE / Editor / OS files
 .vscode/
 .idea/
 *.swp
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+.DS_Store
+Thumbs.db
+
+# Node / Frontend build & dependencies (fallback for root level)
+node_modules/
+dist/
+dist-ssr/
 
 # Test / coverage
 .pytest_cache/
